@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import info.acidflow.coverguess.R;
 import info.acidflow.coverguess.exceptions.FilterNotExistException;
 import info.acidflow.coverguess.processing.controller.ImageProcessingController;
 import info.acidflow.coverguess.processing.filters.Filter;
+import info.acidflow.coverguess.utils.Constants;
 
 /**
  * Created by acidflow on 14/01/14.
@@ -30,9 +32,13 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
     private Handler mHandler;
     private int mStep = 0;
 
-    public static GuessCoverFragment newInstance(String imgPath){
+    public static Fragment newInstance(String imgName){
         Bundle args = new Bundle();
-        args.putString(ARG_IMG_PATH, imgPath);
+        args.putString(ARG_IMG_PATH, Constants.CONFIGURATION.DOWNLOADED_IMAGE_DIRECTORY + File.separator + imgName);
+        File f = new File(Constants.CONFIGURATION.DOWNLOADED_IMAGE_DIRECTORY, imgName);
+        if(!f.exists()){
+            return new Fragment();
+        }
         GuessCoverFragment fragment = new GuessCoverFragment();
         fragment.setArguments(args);
         fragment.setRetainInstance(true);

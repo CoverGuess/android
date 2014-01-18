@@ -89,9 +89,7 @@ public class ImageProcessingController {
         if(mListener != null){
             mListener.onProcessingDone();
         }
-
     }
-
 
 
 }
