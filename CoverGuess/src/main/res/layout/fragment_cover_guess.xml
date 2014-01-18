@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/holder"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    >
+
+    <SeekBar
+        android:id="@+id/pixelizeFactor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <ImageView
+        android:id="@+id/pixelizedCoverHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        tools:src="@drawable/ic_launcher"
+        />
+
+    <Button
+        android:id="@+id/startProcessingBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start IMG Processing"
+        ></Button>
+
+</LinearLayout>
