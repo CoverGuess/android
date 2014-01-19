@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.ObjectAnimator;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -21,7 +24,7 @@ import info.acidflow.coverguess.utils.Constants;
 /**
  * Created by acidflow on 14/01/14.
  */
-public class GuessCoverFragment extends Fragment implements View.OnClickListener, ImageProcessingController.Callback{
+public class GuessCoverFragment extends Fragment implements View.OnClickListener, ImageProcessingController.Callback, Animator.AnimatorListener {
 
     private static final String ARG_IMG_PATH = "IMG_PATH";
 
@@ -34,8 +37,8 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
 
     public static Fragment newInstance(String imgName){
         Bundle args = new Bundle();
-        args.putString(ARG_IMG_PATH, Constants.CONFIGURATION.DOWNLOADED_IMAGE_DIRECTORY + File.separator + imgName);
-        File f = new File(Constants.CONFIGURATION.DOWNLOADED_IMAGE_DIRECTORY, imgName);
+        args.putString(ARG_IMG_PATH, Constants.CONFIGURATION.DOWNLOADED_COVER_DIRECTORY + File.separator + imgName);
+        File f = new File(Constants.CONFIGURATION.DOWNLOADED_COVER_DIRECTORY, imgName);
         if(!f.exists()){
             return new Fragment();
         }
@@ -92,11 +95,14 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
             @Override
             public void run() {
                 if(mStep < mImageProcessingController.getDivisionFactors().size()){
-                    try {
-                        mImageProcessingController.applyFilter(Filter.PIXELLIZE, mStep);
-                    } catch (FilterNotExistException e) {
-                        return;
-                    }
+//                    try {
+                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mCoverImageView, "rotationY", 0, 360).setDuration(800);
+                    objectAnimator.addListener(GuessCoverFragment.this);
+                    objectAnimator.start();
+
+//                    } catch (FilterNotExistException e) {
+//                        return;
+//                    }
                     ++mStep;
                     mHandler.postDelayed(this, mStep * 1000);
                 }
@@ -115,6 +121,39 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onProcessingDone() {
+
+    }
+
+    @Override
+    public void onAnimationStart(Animator animation) {
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if(mStep < mImageProcessingController.getDivisionFactors().size()){
+                     mImageProcessingController.applyFilter(Filter.PIXELLIZE, mStep);
+                    }
+                } catch (FilterNotExistException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, (animation.getDuration()));
+
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animator animation) {
         mCoverImageView.postInvalidate();
+    }
+
+    @Override
+    public void onAnimationCancel(Animator animation) {
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animation) {
     }
 }

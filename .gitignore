@@ -30,3 +30,8 @@ proguard/
 
 *.swp
 .gradle/
+
+# libraries
+lib_NineOldAndroids/
+lib_FlipImageView/
+CoverGuess/src-gen

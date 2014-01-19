@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import info.acidflow.coverguess.CoverGuess;
 import info.acidflow.coverguess.R;
+import info.acidflow.coverguess.data.model.DataType;
 import info.acidflow.coverguess.network.controller.ImageDownloaderController;
 import info.acidflow.coverguess.ui.fragments.GuessCoverFragment;
 import info.acidflow.coverguess.ui.fragments.NavigationDrawerFragment;
@@ -33,7 +34,7 @@ public class HomeActivity extends ActionBarActivity implements NavigationDrawerF
         };
         ImageDownloaderController.getInstance().setListener(this);
         for(int i = 0; i < test.length; i++){
-            ImageDownloaderController.getInstance().downloadCover(test[i], Integer.toString(i));
+            ImageDownloaderController.getInstance().downloadImage(test[i], DataType.COVER, Integer.toString(i));
         }
 
     }

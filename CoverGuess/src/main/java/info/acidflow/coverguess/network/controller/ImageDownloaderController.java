@@ -17,7 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import info.acidflow.coverguess.utils.Constants;
+import info.acidflow.coverguess.datamodel.DataType;
 
 /**
  * Created by acidflow on 18/01/14.
@@ -46,8 +46,8 @@ public class ImageDownloaderController {
         return mInstance;
     }
 
-    public void downloadCover(String url, String fileName){
-        if(!isAlreadyDownloaded(fileName)){
+    public void downloadImage(String url, final DataType type, String fileName){
+        if(!isAlreadyDownloaded(type, fileName)){
             new AsyncTask<String, Void, Void>(){
                 @Override
                 protected Void doInBackground(String... args) {
@@ -55,7 +55,7 @@ public class ImageDownloaderController {
                     Bitmap downloaded = downloadBitmap(args[0]);
                     if(downloaded != null){
                         try {
-                            saveCover(downloaded, args[1]);
+                            saveImage(downloaded, type, args[1]);
                             notifyListenerSuccess(args[1]);
                             return null;
                         } catch (FileNotFoundException e) {
@@ -74,13 +74,13 @@ public class ImageDownloaderController {
         }
     }
 
-    private boolean isAlreadyDownloaded(String fileName){
-        File f = new File(Constants.CONFIGURATION.DOWNLOADED_IMAGE_DIRECTORY, fileName);
+    private boolean isAlreadyDownloaded(DataType type, String fileName){
+        File f = new File(DownloadUtils.getDownloadDirectory(type), fileName);
         return f.exists();
     }
 
-    private void saveCover(Bitmap img, String fileName) throws FileNotFoundException {
-        FileOutputStream fos = new FileOutputStream(new File(Constants.CONFIGURATION.DOWNLOADED_IMAGE_DIRECTORY, fileName ));
+    private void saveImage(Bitmap img, DataType type, String fileName) throws FileNotFoundException {
+        FileOutputStream fos = new FileOutputStream(new File(DownloadUtils.getDownloadDirectory(type), fileName ));
         img.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         img.recycle();
     }
