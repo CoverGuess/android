@@ -15,7 +15,7 @@ allprojects {
     }
 }
 
-task downloadOpenCVSDK(type:Exec){
+task getProjectDependencies(type:Exec){
 	workingDir '.'
 	commandLine './scripts/get_dependencies.sh'
 }

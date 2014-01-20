@@ -3,19 +3,24 @@ package info.acidflow.coverguess.processing.controller;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import info.acidflow.coverguess.exceptions.FilterNotExistException;
 import info.acidflow.coverguess.processing.filters.Filter;
 import info.acidflow.coverguess.processing.filters.NDKFilters;
+import info.acidflow.coverguess.utils.FilesUtils;
 
 /**
+ * A controller to apply filters on a bitmap (using native code)
+ *
  * Created by acidflow on 16/01/14.
  */
 public class ImageProcessingController {
 
+    /**
+     * An interface describing a callback to execute when the image processing is done
+     */
     public interface Callback {
         public void onProcessingDone();
     }
@@ -30,7 +35,7 @@ public class ImageProcessingController {
 
     public ImageProcessingController(String pathToImage) throws FileNotFoundException {
         super();
-        if(!fileExists(pathToImage)){
+        if(!FilesUtils.fileExists(pathToImage)){
             throw new FileNotFoundException("Image not found @" + pathToImage);
         }
         mImagePath = pathToImage;
@@ -38,6 +43,10 @@ public class ImageProcessingController {
         mDivisionFactors = determineDivisionsFactor();
     }
 
+    /**
+     * Compute the division factors which are correct to pixellize the image
+     * @return a list of division factors
+     */
     private ArrayList<Integer> determineDivisionsFactor(){
         ArrayList<Integer> factors = new ArrayList<Integer>();
         for(int i = 4; i < mImageWidth * mImageHeight; i *= 4){
@@ -46,11 +55,10 @@ public class ImageProcessingController {
         return factors;
     }
 
-    private boolean fileExists(String pathToFile){
-        File f = new File(pathToFile);
-        return f.exists();
-    }
-
+    /**
+     * initialize class attributes from image path, this method will also allocate the buffer
+     * to transfer the bitmap from native code to java
+     */
     private void initializeFromImage(){
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inJustDecodeBounds = true;
@@ -69,14 +77,18 @@ public class ImageProcessingController {
         return mResultBitmat;
     }
 
-    public void setListener(Callback listener){
-        mListener = listener;
-    }
+
 
     public ArrayList<Integer> getDivisionFactors(){
         return mDivisionFactors;
     }
 
+    /**
+     * Apply a filter to the bitmap
+     * @param filter the filter to use
+     * @param step the step in the division factor list
+     * @throws FilterNotExistException
+     */
     public void applyFilter(Filter filter, int step) throws FilterNotExistException {
         switch(filter){
             case PIXELLIZE:
@@ -91,5 +103,8 @@ public class ImageProcessingController {
         }
     }
 
+    public void setListener(Callback listener){
+        mListener = listener;
+    }
 
 }

@@ -96,7 +96,7 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
             public void run() {
                 if(mStep < mImageProcessingController.getDivisionFactors().size()){
 //                    try {
-                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mCoverImageView, "rotationY", 0, 360).setDuration(800);
+                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mCoverImageView, "rotationY", 0, 90).setDuration(800);
                     objectAnimator.addListener(GuessCoverFragment.this);
                     objectAnimator.start();
 
@@ -127,24 +127,20 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
     @Override
     public void onAnimationStart(Animator animation) {
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(mStep < mImageProcessingController.getDivisionFactors().size()){
-                     mImageProcessingController.applyFilter(Filter.PIXELLIZE, mStep);
-                    }
-                } catch (FilterNotExistException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, (animation.getDuration()));
-
 
     }
 
     @Override
     public void onAnimationEnd(Animator animation) {
+        try {
+            if(mStep < mImageProcessingController.getDivisionFactors().size()){
+                mImageProcessingController.applyFilter(Filter.PIXELLIZE, mStep);
+            }
+        } catch (FilterNotExistException e) {
+            e.printStackTrace();
+        }
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mCoverImageView, "rotationY", -90, 0).setDuration(800);
+        objectAnimator.start();
         mCoverImageView.postInvalidate();
     }
 

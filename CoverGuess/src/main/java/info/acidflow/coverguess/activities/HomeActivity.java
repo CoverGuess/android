@@ -9,6 +9,7 @@ import info.acidflow.coverguess.CoverGuess;
 import info.acidflow.coverguess.R;
 import info.acidflow.coverguess.datamodel.DataType;
 import info.acidflow.coverguess.network.controller.ImageDownloaderController;
+import info.acidflow.coverguess.network.controller.UpdateContentController;
 import info.acidflow.coverguess.ui.fragments.GuessCoverFragment;
 import info.acidflow.coverguess.ui.fragments.NavigationDrawerFragment;
 
@@ -25,6 +26,7 @@ public class HomeActivity extends ActionBarActivity implements NavigationDrawerF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
         initFragments(savedInstanceState);
+        UpdateContentController.getInstance().getUpdates();
         String[] test = new String[]{
             "http://ecx.images-amazon.com/images/I/31UZQMqbb-L.jpg",
             "http://ecx.images-amazon.com/images/I/410r4X-xVCL.jpg",

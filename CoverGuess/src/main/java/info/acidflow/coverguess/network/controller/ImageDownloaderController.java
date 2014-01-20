@@ -20,20 +20,26 @@ import java.io.InputStream;
 import info.acidflow.coverguess.datamodel.DataType;
 
 /**
+ * A controller to download images
+ *
+ * This class is a singleton
  * Created by acidflow on 18/01/14.
  */
 public class ImageDownloaderController {
 
     private static final String LOG_TAG = ImageDownloaderController.class.getSimpleName();
 
-    private static ImageDownloaderController mInstance;
-    private Listener mListener;
-
+    /**
+     * An interface describing callbacks executed on download success or error
+     */
     public interface Listener{
         public void onDownloadSuccess(String fileName);
         public void onDownloadError(Exception e);
     }
 
+    private static ImageDownloaderController mInstance;
+
+    private Listener mListener;
 
     private ImageDownloaderController(){
         super();
@@ -46,6 +52,12 @@ public class ImageDownloaderController {
         return mInstance;
     }
 
+    /**
+     * Download a file if it is not already cached on the external storage
+     * @param url the url of the file to download
+     * @param type the data type of the image
+     * @param fileName the filename in which the result will be written
+     */
     public void downloadImage(String url, final DataType type, String fileName){
         if(!isAlreadyDownloaded(type, fileName)){
             new AsyncTask<String, Void, Void>(){
@@ -74,17 +86,35 @@ public class ImageDownloaderController {
         }
     }
 
+    /**
+     * Check if a file is already on the external storage
+     * @param type the data type of the file
+     * @param fileName the filename which will be checked
+     * @return true if the file exists, false otherwise
+     */
     private boolean isAlreadyDownloaded(DataType type, String fileName){
         File f = new File(DownloadUtils.getDownloadDirectory(type), fileName);
         return f.exists();
     }
 
+    /**
+     * Save the image which has been downloaded
+     * @param img the bitmap which has been retrieved from the server
+     * @param type the data type of the image
+     * @param fileName the filename in which the result will be written
+     * @throws FileNotFoundException
+     */
     private void saveImage(Bitmap img, DataType type, String fileName) throws FileNotFoundException {
         FileOutputStream fos = new FileOutputStream(new File(DownloadUtils.getDownloadDirectory(type), fileName ));
         img.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         img.recycle();
     }
 
+    /**
+     * Download a bitmap from the given URL
+     * @param url the URL of the file to download
+     * @return the bitmap which has been downloaded
+     */
     private Bitmap downloadBitmap(String url) {
         final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
         final HttpGet getRequest = new HttpGet(url);
@@ -124,22 +154,37 @@ public class ImageDownloaderController {
         return null;
     }
 
+    /**
+     * Utility method to notify the listener if it is not null
+     * @param e the exception which has occured
+     */
     private void notifyListenerError(Exception e){
         if(mListener != null){
             mListener.onDownloadError(e);
         }
     }
 
+    /**
+     * Utility method to notify the listener if it is not null
+     * @param filename the filename for which the download is complete
+     */
     private void notifyListenerSuccess(String filename){
         if(mListener != null){
             mListener.onDownloadSuccess(filename);
         }
     }
 
+    /**
+     * Set the listener for this controller
+     * @param listener the listener
+     */
     public void setListener(ImageDownloaderController.Listener listener){
         mListener = listener;
     }
 
+    /**
+     * Remove the listener for this controller
+     */
     public void removeListener(){
         mListener = null;
     }
