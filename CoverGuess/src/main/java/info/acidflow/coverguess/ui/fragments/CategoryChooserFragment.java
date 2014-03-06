@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import de.greenrobot.dao.query.LazyList;
 import info.acidflow.coverguess.CoverGuess;
@@ -21,6 +20,7 @@ import info.acidflow.coverguess.ui.adapters.CategoryListAdapter;
  */
 public class CategoryChooserFragment extends Fragment{
 
+    public static final String FRAGMENT_TAG = CategoryChooserFragment.class.getName();
     private View mView = null;
 
     @Override

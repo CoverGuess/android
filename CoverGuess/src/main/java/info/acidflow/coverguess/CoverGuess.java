@@ -65,19 +65,15 @@ public class CoverGuess extends Application {
         });
         }catch (Exception e){};
 
+
         try{
         sDaoMaster.newSession().getAlbumDao().insertInTx(
                 new Album[]{
-                        new Album(1l, "T1", "A1", "URL1", 0l),
-                        new Album(2l, "T2", "A2", "URL2", 0l),
-                        new Album(3l, "T3", "A3", "URL3", 0l),
-                        new Album(4l, "T4", "A4", "URL4", 0l),
-                        new Album(5l, "T5", "A5", "URL5", 0l),
-                        new Album(6l, "T6", "A6", "URL6", 0l),
-                        new Album(7l, "T7", "A7", "URL7", 0l),
-                        new Album(8l, "T8", "A8", "URL8", 0l),
-                        new Album(9l, "T9", "A9", "URL9", 0l),
-                        new Album(10l, "T10", "A10", "URL10", 0l)
+                        new Album(null, 1l, "the dark side of the moon", "pink floyd", "http://ecx.images-amazon.com/images/I/31UZQMqbb-L.jpg", 0l),
+                        new Album(null, 2l, "the best of 1990-2000", "U2", "http://ecx.images-amazon.com/images/I/410r4X-xVCL.jpg", 0l),
+                        new Album(null, 3l, "best of pixies wave of mutilation", "the pixies", "http://ecx.images-amazon.com/images/I/51c9%2BsQdUuL.jpg", 0l),
+                        new Album(null, 4l, "toxicity", "system of a down", "http://ecx.images-amazon.com/images/I/618pvPqV-1L.jpg", 0l),
+                        new Album(null, 5l, "nevermind", "nirvana", "http://ecx.images-amazon.com/images/I/51tr3o4kd9L.jpg", 0l)
                 }
         );
         }catch (Exception e){}

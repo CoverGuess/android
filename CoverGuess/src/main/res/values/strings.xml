@@ -11,4 +11,6 @@
     <string name="action_settings">Settings</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="loading_download_success">Loading : %1$d / %2$d</string>
+
 </resources>

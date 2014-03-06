@@ -13,6 +13,7 @@ public class CoverGuessDaoGenerator{
     private static void addAlbum(Schema schema) {
         Entity note = schema.addEntity("Album");
         note.addIdProperty();
+        note.addLongProperty("album_id").notNull();
         note.addStringProperty("album_title").notNull();
         note.addStringProperty("album_artist").notNull();
         note.addStringProperty("album_cover_url").notNull();

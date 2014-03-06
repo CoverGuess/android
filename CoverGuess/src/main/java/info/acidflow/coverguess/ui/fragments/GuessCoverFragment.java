@@ -16,7 +16,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import info.acidflow.coverguess.R;
+import info.acidflow.coverguess.activities.AbstractCoverGuessActivity;
 import info.acidflow.coverguess.exceptions.FilterNotExistException;
+import info.acidflow.coverguess.controllers.QuizzController;
 import info.acidflow.coverguess.processing.controller.ImageProcessingController;
 import info.acidflow.coverguess.processing.filters.Filter;
 import info.acidflow.coverguess.utils.Constants;
@@ -25,7 +27,7 @@ import info.acidflow.coverguess.utils.Constants;
  * Created by acidflow on 14/01/14.
  */
 public class GuessCoverFragment extends Fragment implements View.OnClickListener, ImageProcessingController.Callback, Animator.AnimatorListener {
-
+    public static final String FRAGMENT_TAG = GuessCoverFragment.class.getName();
     private static final String ARG_IMG_PATH = "IMG_PATH";
 
     private View mView;
@@ -35,13 +37,8 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
     private Handler mHandler;
     private int mStep = 0;
 
-    public static Fragment newInstance(String imgName){
+    public static Fragment newInstance(){
         Bundle args = new Bundle();
-        args.putString(ARG_IMG_PATH, Constants.CONFIGURATION.DOWNLOADED_COVER_DIRECTORY + File.separator + imgName);
-        File f = new File(Constants.CONFIGURATION.DOWNLOADED_COVER_DIRECTORY, imgName);
-        if(!f.exists()){
-            return new Fragment();
-        }
         GuessCoverFragment fragment = new GuessCoverFragment();
         fragment.setArguments(args);
         fragment.setRetainInstance(true);
@@ -51,10 +48,11 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            parseArguments(getArguments());
-        } catch (FileNotFoundException e) {
-            return;
+        try{
+            mImageProcessingController = new ImageProcessingController(Constants.CONFIGURATION.DOWNLOADED_COVER_DIRECTORY + File.separator + QuizzController.getInstance().getCurrentAlbum().getAlbum_id());
+            mImageProcessingController.setListener(this);
+        }catch (FileNotFoundException e ){
+            throw new RuntimeException(e);
         }
     }
 
@@ -62,8 +60,8 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater,container,savedInstanceState);
         if(mView == null){
-            super.onCreateView(inflater,container,savedInstanceState);
             mView = inflater.inflate(R.layout.fragment_cover_guess, null);
             mCoverImageView = (ImageView) mView.findViewById(R.id.pixelizedCoverHolder);
             mCoverImageView.setImageBitmap(mImageProcessingController.getResultBitmap());
@@ -83,8 +81,7 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
             return;
         }
         if(args.containsKey(ARG_IMG_PATH)){
-            mImageProcessingController = new ImageProcessingController(args.getString(ARG_IMG_PATH));
-            mImageProcessingController.setListener(this);
+
         }
 
     }
@@ -105,6 +102,9 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
 //                    }
                     ++mStep;
                     mHandler.postDelayed(this, mStep * 1000);
+                }else{
+                    QuizzController.getInstance().incrementQuizzPosition();
+                    ((AbstractCoverGuessActivity) getActivity()).switchContentFragment(GuessCoverFragment.newInstance(), false, false);
                 }
             }
         }, 0);

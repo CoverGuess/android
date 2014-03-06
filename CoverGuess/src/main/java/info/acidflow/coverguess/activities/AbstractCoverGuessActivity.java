@@ -24,4 +24,5 @@ public abstract class AbstractCoverGuessActivity extends ActionBarActivity {
     }
 
     public abstract void switchContentFragment(Fragment fragment, boolean addToBackStack, boolean clearBackStack);
+
 }

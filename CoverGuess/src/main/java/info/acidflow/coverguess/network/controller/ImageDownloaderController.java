@@ -60,25 +60,39 @@ public class ImageDownloaderController {
      */
     public void downloadImage(String url, final DataType type, String fileName){
         if(!isAlreadyDownloaded(type, fileName)){
-            new AsyncTask<String, Void, Void>(){
+            new AsyncTask<String, Void, String>(){
+                private boolean errorHappened = false;
+                private Exception exceptionRaised = null;
                 @Override
-                protected Void doInBackground(String... args) {
+                protected String doInBackground(String... args) {
 
                     Bitmap downloaded = downloadBitmap(args[0]);
                     if(downloaded != null){
                         try {
                             saveImage(downloaded, type, args[1]);
-                            notifyListenerSuccess(args[1]);
-                            return null;
+                            return args[1];
                         } catch (FileNotFoundException e) {
-                            notifyListenerError(e);
+                            errorHappened = true;
+                            exceptionRaised = e;
                             Log.e(LOG_TAG, "File not found when saving bitmap " + e.toString());
                         }
                     }
                     if(downloaded != null && !downloaded.isRecycled()){
                         downloaded.recycle();
                     }
+                    errorHappened = true;
                     return null;
+                }
+
+                @Override
+                protected void onPostExecute(String result) {
+                    super.onPostExecute(result);
+                    if(!errorHappened){
+                        notifyListenerSuccess(result);
+                    }else{
+                        notifyListenerError(exceptionRaised);
+                    }
+
                 }
             }.execute(url, fileName);
         }else{
@@ -122,7 +136,7 @@ public class ImageDownloaderController {
             HttpResponse response = client.execute(getRequest);
             final int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != HttpStatus.SC_OK) {
-                notifyListenerError(new HttpException());
+//                notifyListenerError(new HttpException());
                 Log.w("ImageDownloader", "Error " + statusCode + " while retrieving bitmap from " + url);
                 return null;
             }
@@ -143,7 +157,7 @@ public class ImageDownloaderController {
             }
         } catch (Exception e) {
             // Could provide a more explicit error message for IOException or IllegalStateException
-            notifyListenerError(e);
+//            notifyListenerError(e);
             getRequest.abort();
             Log.w("ImageDownloader", "Error while retrieving bitmap from " + url + e.toString());
         } finally {
