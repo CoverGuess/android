@@ -2,7 +2,6 @@ package info.acidflow.coverguess.ui.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ import info.acidflow.coverguess.utils.Constants;
 /**
  * Created by acidflow on 14/01/14.
  */
-public class GuessCoverFragment extends Fragment implements View.OnClickListener, ImageProcessingController.Callback, Animator.AnimatorListener {
+public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements View.OnClickListener, ImageProcessingController.Callback, Animator.AnimatorListener {
     public static final String FRAGMENT_TAG = GuessCoverFragment.class.getName();
     private static final String ARG_IMG_PATH = "IMG_PATH";
 
@@ -37,12 +36,17 @@ public class GuessCoverFragment extends Fragment implements View.OnClickListener
     private Handler mHandler;
     private int mStep = 0;
 
-    public static Fragment newInstance(){
+    public static AbstractCoverGuessUIFragment newInstance(){
         Bundle args = new Bundle();
         GuessCoverFragment fragment = new GuessCoverFragment();
         fragment.setArguments(args);
         fragment.setRetainInstance(true);
         return fragment;
+    }
+
+    @Override
+    public String getFragmentTag(){
+        return FRAGMENT_TAG;
     }
 
     @Override

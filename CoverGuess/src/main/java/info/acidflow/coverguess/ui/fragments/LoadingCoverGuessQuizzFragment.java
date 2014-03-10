@@ -1,7 +1,6 @@
 package info.acidflow.coverguess.ui.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import info.acidflow.coverguess.controllers.QuizzController;
 /**
  * Created by paul on 09/02/14.
  */
-public class LoadingCoverGuessQuizzFragment extends Fragment implements ImageDownloaderController.Listener {
+public class LoadingCoverGuessQuizzFragment extends AbstractCoverGuessUIFragment implements ImageDownloaderController.Listener {
 
     public static final String FRAGMENT_TAG = LoadingCoverGuessQuizzFragment.class.getName();
 
@@ -30,12 +29,17 @@ public class LoadingCoverGuessQuizzFragment extends Fragment implements ImageDow
     private int mDownloadSuccess;
     private boolean mIsDownloadStarted = false;
 
-    public static LoadingCoverGuessQuizzFragment newInstance(String catID){
+    public static AbstractCoverGuessUIFragment newInstance(String catID){
         Bundle args = new Bundle();
         args.putString(ARG_CAT_ID, catID);
         LoadingCoverGuessQuizzFragment loadingCoverGuessQuizzFragment = new LoadingCoverGuessQuizzFragment();
         loadingCoverGuessQuizzFragment.setArguments(args);
         return loadingCoverGuessQuizzFragment;
+    }
+
+    @Override
+    public String getFragmentTag() {
+        return FRAGMENT_TAG;
     }
 
     @Override
@@ -101,7 +105,7 @@ public class LoadingCoverGuessQuizzFragment extends Fragment implements ImageDow
 
     private void startQuizz(){
         QuizzController.getInstance().initialize(mAlbumsQuizz);
-        ((AbstractCoverGuessActivity) getActivity()).switchContentFragment(GuessCoverFragment.newInstance(), true, false);
+        ((AbstractCoverGuessActivity) getActivity()).switchContentFragment(GuessCoverFragment.newInstance(), false, false);
         ImageDownloaderController.getInstance().removeListener();
     }
 
