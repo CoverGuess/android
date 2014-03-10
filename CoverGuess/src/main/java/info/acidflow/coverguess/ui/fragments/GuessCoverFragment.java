@@ -13,6 +13,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 
 import info.acidflow.coverguess.R;
 import info.acidflow.coverguess.activities.AbstractCoverGuessActivity;
@@ -20,6 +21,7 @@ import info.acidflow.coverguess.exceptions.FilterNotExistException;
 import info.acidflow.coverguess.controllers.QuizzController;
 import info.acidflow.coverguess.processing.controller.ImageProcessingController;
 import info.acidflow.coverguess.processing.filters.Filter;
+import info.acidflow.coverguess.processing.text.TextProcessor;
 import info.acidflow.coverguess.utils.Constants;
 
 /**
@@ -55,6 +57,11 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
         try{
             mImageProcessingController = new ImageProcessingController(Constants.CONFIGURATION.DOWNLOADED_COVER_DIRECTORY + File.separator + QuizzController.getInstance().getCurrentAlbum().getAlbum_id());
             mImageProcessingController.setListener(this);
+            HashMap<Character, Integer> letterDistributionTitle =
+                    TextProcessor.getLettersDistribution(QuizzController.getInstance().getCurrentAlbum().getAlbum_title());
+
+            HashMap<Character, Integer> letterDistributionArtist =
+                    TextProcessor.getLettersDistribution(QuizzController.getInstance().getCurrentAlbum().getAlbum_artist());
         }catch (FileNotFoundException e ){
             throw new RuntimeException(e);
         }
@@ -105,7 +112,7 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
 //                        return;
 //                    }
                     ++mStep;
-                    mHandler.postDelayed(this, mStep * 1000);
+                    mHandler.postDelayed(this, mStep * 200);
                 }else{
                     QuizzController.getInstance().incrementQuizzPosition();
                     ((AbstractCoverGuessActivity) getActivity()).switchContentFragment(GuessCoverFragment.newInstance(), false, false);
