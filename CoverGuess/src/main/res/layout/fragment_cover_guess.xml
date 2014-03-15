@@ -9,25 +9,39 @@
     android:gravity="center_horizontal"
     >
 
-    <SeekBar
-        android:id="@+id/pixelizeFactor"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        android:layout_weight="@integer/cover_part_weight_fragment_guess_cover">
+        <ImageView
+            android:id="@+id/pixelizedCoverHolder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            tools:src="@drawable/ic_launcher"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="@integer/gridview_part_weight_fragment_guess_cover">
+        <TextView
+            android:id="@+id/album_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <GridView
+            android:id="@+id/letters_gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="@integer/gridview_number_columns_fragment_guess_cover"
+            android:verticalSpacing="@dimen/gridview_item_vertical_spacing_fragment_guess_cover"
+            android:horizontalSpacing="@dimen/gridview_item_horizontal_spacing_fragment_guess_cover"/>
+    </LinearLayout>
 
 
-    <ImageView
-        android:id="@+id/pixelizedCoverHolder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        tools:src="@drawable/ic_launcher"
-        />
-
-    <Button
-        android:id="@+id/startProcessingBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="start IMG Processing"
-        ></Button>
 
 </LinearLayout>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="adapter_category_item_tag_dbid" type="id"></item>
+    <item name="tag_adapter_category_item_dbid" type="id"></item>
+    <item name="tag_adapter_guess_cover_letter" type="id"></item>
 </resources>

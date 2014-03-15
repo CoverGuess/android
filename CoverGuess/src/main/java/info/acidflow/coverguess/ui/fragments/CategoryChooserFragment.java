@@ -36,7 +36,7 @@ public class CategoryChooserFragment extends AbstractCoverGuessUIFragment {
         ((GridView) mView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String categoryId = String.valueOf(view.getTag(R.id.adapter_category_item_tag_dbid));
+                String categoryId = String.valueOf(view.getTag(R.id.tag_adapter_category_item_dbid));
                 AbstractCoverGuessUIFragment f = LoadingCoverGuessQuizzFragment.newInstance(categoryId);
                 ((AbstractCoverGuessActivity) getActivity()).switchContentFragment(f, true, false);
             }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="gridview_number_columns_fragment_guess_cover">6</integer>
+    <integer name="cover_part_weight_fragment_guess_cover">50</integer>
+    <integer name="gridview_part_weight_fragment_guess_cover">50</integer>
+    <dimen name="gridview_item_vertical_spacing_fragment_guess_cover">12dp</dimen>
+    <dimen name="gridview_item_horizontal_spacing_fragment_guess_cover">12dp</dimen>
+</resources>

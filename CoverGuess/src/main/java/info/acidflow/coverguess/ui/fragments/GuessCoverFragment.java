@@ -5,8 +5,10 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -17,11 +19,12 @@ import java.util.HashMap;
 
 import info.acidflow.coverguess.R;
 import info.acidflow.coverguess.activities.AbstractCoverGuessActivity;
-import info.acidflow.coverguess.exceptions.FilterNotExistException;
 import info.acidflow.coverguess.controllers.QuizzController;
+import info.acidflow.coverguess.exceptions.FilterNotExistException;
 import info.acidflow.coverguess.processing.controller.ImageProcessingController;
 import info.acidflow.coverguess.processing.filters.Filter;
 import info.acidflow.coverguess.processing.text.TextProcessor;
+import info.acidflow.coverguess.ui.adapters.GuessCoverLettersAdapter;
 import info.acidflow.coverguess.utils.Constants;
 
 /**
@@ -33,10 +36,13 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
 
     private View mView;
     private ImageView mCoverImageView;
-    private SeekBar mPixelizeFactorSeekBar;
     private ImageProcessingController mImageProcessingController;
     private Handler mHandler;
+    private ImageProcessingRunnable mImageProcessingTask = new ImageProcessingRunnable();
     private int mStep = 0;
+    private boolean isRestored = false;
+    private GridView mLetterGridView;
+    private TextView mUserGuessView;
 
     public static AbstractCoverGuessUIFragment newInstance(){
         Bundle args = new Bundle();
@@ -76,58 +82,49 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
             mView = inflater.inflate(R.layout.fragment_cover_guess, null);
             mCoverImageView = (ImageView) mView.findViewById(R.id.pixelizedCoverHolder);
             mCoverImageView.setImageBitmap(mImageProcessingController.getResultBitmap());
-            initializeClickListeners();
+            mUserGuessView = (TextView) mView.findViewById(R.id.album_name);
+            mLetterGridView = (GridView) mView.findViewById(R.id.letters_gridview);
+            mLetterGridView.setAdapter(new GuessCoverLettersAdapter(getActivity(), TextProcessor.getLettersList(QuizzController.getInstance().getCurrentAlbum().getAlbum_title())));
+            mLetterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    String letter = (String) view.getTag(R.id.tag_adapter_guess_cover_letter);
+                    view.setVisibility(View.INVISIBLE);
+                    addLetterToUserGuess(letter);
+                }
+            });
         }else{
             ((ViewGroup) mView.getParent()).removeView(mView);
         }
         return mView;
     }
 
-    private void initializeClickListeners(){
-        mView.findViewById(R.id.startProcessingBtn).setOnClickListener(this);
+    private void addLetterToUserGuess(String letter){
+        mUserGuessView.append(letter);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(!isRestored){
+            startImageProcessing();
+        }
     }
 
     private void parseArguments(Bundle args) throws FileNotFoundException {
         if(args == null){
             return;
         }
-        if(args.containsKey(ARG_IMG_PATH)){
-
-        }
-
     }
 
-    private void startImageProcessing(boolean initializeSeekBar){
+    private void startImageProcessing(){
         mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(mStep < mImageProcessingController.getDivisionFactors().size()){
-//                    try {
-                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mCoverImageView, "rotationY", 0, 90).setDuration(800);
-                    objectAnimator.addListener(GuessCoverFragment.this);
-                    objectAnimator.start();
-
-//                    } catch (FilterNotExistException e) {
-//                        return;
-//                    }
-                    ++mStep;
-                    mHandler.postDelayed(this, mStep * 200);
-                }else{
-                    QuizzController.getInstance().incrementQuizzPosition();
-                    ((AbstractCoverGuessActivity) getActivity()).switchContentFragment(GuessCoverFragment.newInstance(), false, false);
-                }
-            }
-        }, 0);
+        mHandler.postDelayed(mImageProcessingTask, 0);
     }
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()){
-            case R.id.startProcessingBtn:
-                startImageProcessing(true);
-                break;
-        }
+
     }
 
     @Override
@@ -162,5 +159,38 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
 
     @Override
     public void onAnimationRepeat(Animator animation) {
+    }
+
+    private void animateImageViewDuringProcessing() {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mCoverImageView, "rotationY", 0, 90).setDuration(800);
+        objectAnimator.addListener(GuessCoverFragment.this);
+        objectAnimator.start();
+    }
+
+    class ImageProcessingRunnable implements Runnable{
+        @Override
+        public void run() {
+            if(mStep < mImageProcessingController.getDivisionFactors().size()){
+                animateImageViewDuringProcessing();
+                mStep++;
+                mHandler.postDelayed(this, mStep * 500);
+            }else{
+                QuizzController.getInstance().incrementQuizzPosition();
+                ((AbstractCoverGuessActivity) getActivity()).switchContentFragment(GuessCoverFragment.newInstance(), false, false);
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacks(mImageProcessingTask);
+        isRestored = false;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        isRestored = true;
     }
 }
