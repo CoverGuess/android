@@ -8,7 +8,7 @@
 #include "log/logger.h"
 using namespace cv;
 namespace CoverGuessFilter{
-    void applyPixelize(const char* filePath, int outputHeight, int outputWidth, unsigned char * outputAllocation, int divisorFactor);
+    void applyPixelize(const std::string & filePath, int outputHeight, int outputWidth, unsigned char * outputAllocation, int divisorFactor);
 }
 
 #endif

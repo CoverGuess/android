@@ -30,8 +30,12 @@ public class QuizzController {
         mQuizz = quizz;
     }
 
-    public void incrementQuizzPosition(){
-        mQuizzPosition++;
+    public boolean incrementQuizzPosition() {
+        if (mQuizzPosition + 1< mQuizz.size()){
+            mQuizzPosition++;
+            return true;
+        }
+        return false;
     }
 
     public Album getCurrentAlbum(){

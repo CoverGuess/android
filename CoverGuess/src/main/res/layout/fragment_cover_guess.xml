@@ -12,7 +12,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="@integer/cover_part_weight_fragment_guess_cover">
+        android:layout_weight="@integer/cover_part_weight_fragment_guess_cover"
+        android:background="@android:color/black">
         <ImageView
             android:id="@+id/pixelizedCoverHolder"
             android:layout_width="match_parent"
@@ -28,10 +29,40 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         android:layout_weight="@integer/gridview_part_weight_fragment_guess_cover">
-        <TextView
-            android:id="@+id/album_name"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/album_name"
+                android:layout_width="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/undo_last_action"
+                android:textSize="18sp"
+                android:layout_height="wrap_content"/>
+
+            <ImageButton
+                android:id="@+id/undo_last_action"
+                android:layout_toLeftOf="@+id/clear_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:background="@null"
+                android:src="@android:drawable/ic_media_rew"/>
+
+            <ImageButton
+                android:id="@+id/clear_all"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:background="@null"
+                android:src="@android:drawable/ic_delete"/>
+
+        </RelativeLayout>
 
         <GridView
             android:id="@+id/letters_gridview"

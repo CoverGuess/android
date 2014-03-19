@@ -1,7 +1,7 @@
 #include "pixellize.h"
-void CoverGuessFilter::applyPixelize(const char* filePath, int outputHeight, int outputWidth, unsigned char * outputAllocation, int divisorFactor){
+void CoverGuessFilter::applyPixelize(const std::string & filePath, int outputHeight, int outputWidth, unsigned char * outputAllocation, int divisorFactor){
     LOGI("PIXELIZE_FILTER", "applyPixelize() called");
-    Mat toPixelize = imread(filePath, 1);
+    Mat toPixelize = imread(filePath.c_str(), 1);
     int blockXSize = outputWidth / divisorFactor;
     int blockYSize = outputHeight / divisorFactor;
     int pixelCount = blockXSize * blockYSize; // How many pixels we'll read per block - used to find the average colour

@@ -1,5 +1,7 @@
 package info.acidflow.coverguess.processing.text;
 
+import android.util.SparseArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,5 +39,16 @@ public class TextProcessor {
             }
         }
         return letters;
+    }
+
+    public static SparseArray<Boolean> getNonLettersPositions(String str){
+        SparseArray<Boolean> nonLetters = new SparseArray<Boolean>();
+        char[] strChars = str.toCharArray();
+        for(int i = 0; i < strChars.length; i++){
+            if(!Character.isLetter(strChars[i])){
+                nonLetters.put(i, true);
+            }
+        }
+        return nonLetters;
     }
 }
