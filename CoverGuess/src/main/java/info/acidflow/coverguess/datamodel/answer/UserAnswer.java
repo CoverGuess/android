@@ -30,7 +30,7 @@ public class UserAnswer extends AbstractAnswer {
             throw new IllegalArgumentException();
         }
         if( !mPrefilledPositions[ position ]){
-            super.removeCharAt(position);
+            super.removeCharAt(position, '?' );
         }
     }
 
@@ -55,5 +55,24 @@ public class UserAnswer extends AbstractAnswer {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public int getNextPosition(){
+        for( int i = 0; i < getFilledPositions().length; i++ ){
+            if(!getFilledPositions()[i]){
+                return i;
+            }
+        }
+        return getFilledPositions().length;
+    }
+
+    public int getPreviousPosition(){
+        int currentPosition = getNextPosition();
+        for(int i = currentPosition - 1; i >= 0; i--){
+            if(getFilledPositions()[i] && !mPrefilledPositions[i] ){
+                return i;
+            }
+        }
+        return currentPosition;
     }
 }

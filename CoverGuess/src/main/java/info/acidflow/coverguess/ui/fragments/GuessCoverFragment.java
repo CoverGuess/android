@@ -28,6 +28,8 @@ import info.acidflow.coverguess.R;
 import info.acidflow.coverguess.activities.AbstractCoverGuessActivity;
 import info.acidflow.coverguess.controllers.QuizzController;
 import info.acidflow.coverguess.datamodel.Album;
+import info.acidflow.coverguess.datamodel.answer.CorrectAnswer;
+import info.acidflow.coverguess.datamodel.answer.UserAnswer;
 import info.acidflow.coverguess.exceptions.FilterNotExistException;
 import info.acidflow.coverguess.processing.controller.ImageProcessingController;
 import info.acidflow.coverguess.processing.filters.Filter;
@@ -51,12 +53,10 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
     private boolean isRestored = false;
     private GridView mLetterGridView;
     private TextView mUserGuessView;
-    private SparseArray<Boolean> mNonAlphaPositions;
     private Stack<View> mLastActionView = new Stack<View>();
-    // TODO REFACTORING WITH Answer classes
-    private StringBuilder mUserAnswer;
-    private int mUserAnswerCurrentPosition = 0;
     private Album mCurrentAlbum;
+    private CorrectAnswer mCorrectAnswer;
+    private UserAnswer mUserAnswer;
 
     public static AbstractCoverGuessUIFragment newInstance(){
         Bundle args = new Bundle();
@@ -94,8 +94,10 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
             mCoverImageView.setImageBitmap(mImageProcessingController.getResultBitmap());
 
             mUserGuessView = (TextView) mView.findViewById(R.id.album_name);
-            mUserAnswer = new StringBuilder(mCurrentAlbum.getAlbum_title().replaceAll("[a-zA-Z]", "?"));
-            mUserGuessView.setText(mUserAnswer);
+            mUserAnswer = new UserAnswer( mCurrentAlbum.getAlbum_title().toLowerCase() );
+            mCorrectAnswer = new CorrectAnswer( mCurrentAlbum.getAlbum_title().toLowerCase() );
+
+            mUserGuessView.setText( mUserAnswer.getAnswerString() );
 
             mLetterGridView = (GridView) mView.findViewById(R.id.letters_gridview);
             List<String> albumTitle = TextProcessor.getLettersList(mCurrentAlbum.getAlbum_title());
@@ -122,37 +124,32 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
         mView.findViewById(R.id.clear_all).setOnClickListener(this);
     }
 
-    private void addLetterToUserGuess(String letter){
-        while (mNonAlphaPositions.get(mUserAnswerCurrentPosition) != null && mNonAlphaPositions.get(mUserAnswerCurrentPosition)){
-            mUserAnswerCurrentPosition++;
-        }
-        mUserAnswer.replace(mUserAnswerCurrentPosition, mUserAnswerCurrentPosition + 1, letter);
-        mUserAnswerCurrentPosition++;
-        mUserGuessView.setText(mUserAnswer.toString());
-        if(mUserAnswer.toString().trim().equalsIgnoreCase(mCurrentAlbum.getAlbum_title().trim())){
+    private void addLetterToUserGuess( String letter ){
+        mUserAnswer.setCharAt(mUserAnswer.getNextPosition(), letter.charAt(0) );
+        mUserGuessView.setText( mUserAnswer.getAnswerString() );
+        if( mCorrectAnswer.equals(mUserAnswer) ){
             gg();
         }
     }
 
     private void removeLetterFromUserGuess(){
-        do {
-            mUserAnswerCurrentPosition--;
-        }while (mNonAlphaPositions.get(mUserAnswerCurrentPosition) != null && mNonAlphaPositions.get(mUserAnswerCurrentPosition));
-        mUserAnswer.replace(mUserAnswerCurrentPosition, mUserAnswerCurrentPosition + 1, "?");
-        mUserGuessView.setText(mUserAnswer.toString());
+        mUserAnswer.removeCharAt( mUserAnswer.getPreviousPosition() );
+        mUserGuessView.setText( mUserAnswer.getAnswerString() );
     }
 
     private void undoLastAction(){
-        if(mUserAnswerCurrentPosition > 0 && mLastActionView.size() > 0) {
+        if(mUserAnswer.getNextPosition() >= 0 && mLastActionView.size() > 0) {
             removeLetterFromUserGuess();
             mLastActionView.pop().setVisibility(View.VISIBLE);
         }
     }
 
     private void clearAll(){
-        mUserAnswerCurrentPosition = 0;
-        mUserAnswer = new StringBuilder(mCurrentAlbum.getAlbum_title().replaceAll("[a-zA-Z]", "?"));
-        mUserGuessView.setText(mUserAnswer);
+        do{
+            mUserAnswer.removeCharAt( mUserAnswer.getPreviousPosition() );
+        }while ( mUserAnswer.getNextPosition() > mUserAnswer.getPreviousPosition() );
+        mUserGuessView.setText( mUserAnswer.getAnswerString() );
+
         while(mLastActionView.size() > 0){
             mLastActionView.pop().setVisibility(View.VISIBLE);
         }

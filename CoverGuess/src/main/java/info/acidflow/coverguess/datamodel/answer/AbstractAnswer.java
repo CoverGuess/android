@@ -1,4 +1,4 @@
-package info.acidflow.coverguess.datamodel.answer;
+package info.acidflow.covercguess.datamodel.answer;
 
 import java.util.Arrays;
 
@@ -36,10 +36,14 @@ public abstract class AbstractAnswer {
     }
 
     public void removeCharAt( int position ){
+        removeCharAt( position, null );
+    }
+
+    protected void removeCharAt( int position , Character removeReplacement ){
         if( position > mAnswer.length || position < 0 ){
             throw new IllegalArgumentException();
         }
-        mAnswer[ position ] = null;
+        mAnswer[ position ] = removeReplacement;
         mFilledPosition[ position ] = false;
     }
 
@@ -50,7 +54,7 @@ public abstract class AbstractAnswer {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof AbstractAnswer)) return false;
 
         AbstractAnswer that = (AbstractAnswer) o;
 
