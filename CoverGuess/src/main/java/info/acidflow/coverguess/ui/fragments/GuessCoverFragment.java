@@ -53,6 +53,7 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
     private TextView mUserGuessView;
     private SparseArray<Boolean> mNonAlphaPositions;
     private Stack<View> mLastActionView = new Stack<View>();
+    // TODO REFACTORING WITH Answer classes
     private StringBuilder mUserAnswer;
     private int mUserAnswerCurrentPosition = 0;
     private Album mCurrentAlbum;
@@ -77,12 +78,6 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
         try{
             mImageProcessingController = new ImageProcessingController(Constants.CONFIGURATION.DOWNLOADED_COVER_DIRECTORY + File.separator + mCurrentAlbum.getAlbum_id());
             mImageProcessingController.setListener(this);
-            HashMap<Character, Integer> letterDistributionTitle =
-                    TextProcessor.getLettersDistribution(mCurrentAlbum.getAlbum_title());
-
-            HashMap<Character, Integer> letterDistributionArtist =
-                    TextProcessor.getLettersDistribution(mCurrentAlbum.getAlbum_artist());
-            mNonAlphaPositions = TextProcessor.getNonLettersPositions(mCurrentAlbum.getAlbum_title());
         }catch (FileNotFoundException e ){
             throw new RuntimeException(e);
         }
