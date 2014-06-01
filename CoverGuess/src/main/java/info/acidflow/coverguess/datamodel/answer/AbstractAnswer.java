@@ -1,4 +1,4 @@
-package info.acidflow.covercguess.datamodel.answer;
+package info.acidflow.coverguess.datamodel.answer;
 
 import java.util.Arrays;
 
