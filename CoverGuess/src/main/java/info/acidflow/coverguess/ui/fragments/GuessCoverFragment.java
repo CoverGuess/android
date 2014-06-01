@@ -100,7 +100,7 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
             mUserGuessView.setText( mUserAnswer.getAnswerString() );
 
             mLetterGridView = (GridView) mView.findViewById(R.id.letters_gridview);
-            List<String> albumTitle = TextProcessor.getLettersList(mCurrentAlbum.getAlbum_title());
+            List<String> albumTitle = TextProcessor.getLettersListOrDigit(mCurrentAlbum.getAlbum_title());
             Collections.shuffle(albumTitle);
             mLetterGridView.setAdapter(new GuessCoverLettersAdapter(getActivity(), albumTitle));
             mLetterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

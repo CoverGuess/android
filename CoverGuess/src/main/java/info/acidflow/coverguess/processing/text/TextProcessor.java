@@ -41,6 +41,17 @@ public class TextProcessor {
         return letters;
     }
 
+    public static List<String> getLettersListOrDigit(String str){
+        List<String> letters = new ArrayList<String>();
+        char[] strChars = str.toCharArray();
+        for(int i = 0; i < strChars.length; i++){
+            if(Character.isLetterOrDigit(strChars[i])){
+                letters.add(String.valueOf(strChars[i]));
+            }
+        }
+        return letters;
+    }
+
     public static SparseArray<Boolean> getNonLettersPositions(String str){
         SparseArray<Boolean> nonLetters = new SparseArray<Boolean>();
         char[] strChars = str.toCharArray();
