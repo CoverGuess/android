@@ -1,11 +1,13 @@
 package info.acidflow.coverguess.ui.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.activeandroid.query.Select;
 
@@ -15,7 +17,11 @@ import info.acidflow.coverguess.CoverGuess;
 import info.acidflow.coverguess.R;
 import info.acidflow.coverguess.activities.AbstractCoverGuessActivity;
 import info.acidflow.coverguess.datamodel.Category;
+import info.acidflow.coverguess.datamodel.api.AlbumAPI;
 import info.acidflow.coverguess.ui.adapters.CategoryListAdapter;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by paul on 09/02/14.

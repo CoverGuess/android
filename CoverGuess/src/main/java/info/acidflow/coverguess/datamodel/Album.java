@@ -4,6 +4,8 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
+import info.acidflow.coverguess.datamodel.api.AlbumAPI;
+
 /**
  * Created by paul on 21/06/14.
  */
@@ -44,6 +46,15 @@ public class Album extends Model {
         mCoverUrl = coverUrl;
         mLastUpdateTimestamp = lastUpdatedTimestamp;
         mCategory = category;
+    }
+
+    public Album( AlbumAPI api){
+        super();
+        mAlbumId = api.id;
+        mTitle = api.album_name;
+        mArtist = api.album_artist;
+        mCoverUrl = api.image_url;
+        mLastUpdateTimestamp = api.last_update;
     }
 
     public long getAlbumId() {

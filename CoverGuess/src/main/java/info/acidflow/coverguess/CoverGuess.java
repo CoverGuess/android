@@ -10,7 +10,10 @@ import com.activeandroid.ActiveAndroid;
 
 import info.acidflow.coverguess.datamodel.Album;
 import info.acidflow.coverguess.datamodel.Category;
+import info.acidflow.coverguess.network.interfaces.CoverGuessAPI;
 import info.acidflow.coverguess.utils.Constants;
+import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 
 /**
  * Override the Application class to manage object lifecycle
@@ -20,12 +23,14 @@ import info.acidflow.coverguess.utils.Constants;
 public class CoverGuess extends com.activeandroid.app.Application {
 
     private static Context mApplicationContext;
+    private static CoverGuessAPI sCoverGuessAPI;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mApplicationContext = getApplicationContext();
         Constants.CONFIGURATION.initialize(getApplicationContext());
+        initializeCoverGuessAPI();
         Category cat = new Category("Testing");
         cat.save();
         Album[] albums = new Album[]{
@@ -54,6 +59,17 @@ public class CoverGuess extends com.activeandroid.app.Application {
      */
     public static Context getContext(){
         return mApplicationContext;
+    }
+
+    private void initializeCoverGuessAPI(){
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint( Constants.HTTP.API_ROOT_URL.toString() )
+                .build();
+        sCoverGuessAPI = restAdapter.create( CoverGuessAPI.class );
+    }
+
+    public static CoverGuessAPI getRestAPI(){
+        return sCoverGuessAPI;
     }
 
 }

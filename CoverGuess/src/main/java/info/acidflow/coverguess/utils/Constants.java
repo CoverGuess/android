@@ -42,7 +42,7 @@ public class Constants {
         private static final String API_PATH = "api";
         private static final String GET_UPDATES_PATH = "get_updates";
 
-        private static final Uri API_ROOT_URL = SERVER_ROOT_URL.buildUpon().appendPath(API_PATH).build();
+        public static final Uri API_ROOT_URL = SERVER_ROOT_URL.buildUpon().appendPath(API_PATH).build();
 
         public static final Uri GET_UPDATES = API_ROOT_URL.buildUpon().appendPath(GET_UPDATES_PATH).build();
 
