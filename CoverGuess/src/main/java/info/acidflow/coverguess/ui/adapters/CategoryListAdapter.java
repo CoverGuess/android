@@ -33,7 +33,7 @@ public class CategoryListAdapter extends ArrayAdapter<Category> {
             convertView = mLayoutInflater.inflate(R.layout.adapter_category_item, null);
         }
         convertView.setTag(R.id.tag_adapter_category_item_dbid, category.getId());
-        ((TextView) convertView.findViewById(R.id.adapter_category_item_name)).setText(category.getCategory_name());
+        ((TextView) convertView.findViewById(R.id.adapter_category_item_name)).setText(category.getName());
         return convertView;
     }
 }

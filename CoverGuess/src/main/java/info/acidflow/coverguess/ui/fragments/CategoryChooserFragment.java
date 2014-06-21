@@ -7,7 +7,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import de.greenrobot.dao.query.LazyList;
+import com.activeandroid.query.Select;
+
+import java.util.List;
+
 import info.acidflow.coverguess.CoverGuess;
 import info.acidflow.coverguess.R;
 import info.acidflow.coverguess.activities.AbstractCoverGuessActivity;
@@ -31,7 +34,12 @@ public class CategoryChooserFragment extends AbstractCoverGuessUIFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         mView = inflater.inflate(R.layout.fragment_category_chooser, null);
-        LazyList<Category> categories = CoverGuess.getDaoMaster().newSession().getCategoryDao().queryBuilder().listLazy();
+
+        List<Category> categories = new Select()
+                .distinct().from( Category.class )
+                .orderBy( "category_name ASC" )
+                .execute();
+
         ((GridView) mView).setAdapter(new CategoryListAdapter(getActivity(), R.layout.adapter_category_item, categories));
         ((GridView) mView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

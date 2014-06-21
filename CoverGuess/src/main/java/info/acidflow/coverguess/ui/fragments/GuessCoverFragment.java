@@ -76,7 +76,7 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
         super.onCreate(savedInstanceState);
         mCurrentAlbum = QuizzController.getInstance().getCurrentAlbum();
         try{
-            mImageProcessingController = new ImageProcessingController(Constants.CONFIGURATION.DOWNLOADED_COVER_DIRECTORY + File.separator + mCurrentAlbum.getAlbum_id());
+            mImageProcessingController = new ImageProcessingController(Constants.CONFIGURATION.DOWNLOADED_COVER_DIRECTORY + File.separator + mCurrentAlbum.getAlbumId());
             mImageProcessingController.setListener(this);
         }catch (FileNotFoundException e ){
             throw new RuntimeException(e);
@@ -94,8 +94,8 @@ public class GuessCoverFragment extends AbstractCoverGuessUIFragment implements 
             mCoverImageView.setImageBitmap(mImageProcessingController.getResultBitmap());
 
             mUserGuessView = (TextView) mView.findViewById(R.id.album_name);
-            mUserAnswer = new UserAnswer( mCurrentAlbum.getAlbum_title().toLowerCase() );
-            mCorrectAnswer = new CorrectAnswer( mCurrentAlbum.getAlbum_title().toLowerCase() );
+            mUserAnswer = new UserAnswer( mCurrentAlbum.getTitle().toLowerCase() );
+            mCorrectAnswer = new CorrectAnswer( mCurrentAlbum.getTitle().toLowerCase() );
 
             mUserGuessView.setText( mUserAnswer.getAnswerString() );
 

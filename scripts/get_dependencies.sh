@@ -32,6 +32,14 @@ rm -rf $NINE_OLDS_DIRECTORY_TMP
 ####################################################################################################
 ##                                                                                   ##
 ####################################################################################################
-DAOGENERATOR_SRC_GEN_FOLDER="src-gen"
+#DAOGENERATOR_SRC_GEN_FOLDER="src-gen"
+#cd $INITIAL_PATH
+#mkdir CoverGuess/$DAOGENERATOR_SRC_GEN_FOLDER
+####################################################################################################
+##				Active Android                                        		  ##
+####################################################################################################
+
 cd $INITIAL_PATH
-mkdir CoverGuess/$DAOGENERATOR_SRC_GEN_FOLDER
+git clone https://github.com/pardom/ActiveAndroid.git
+cd ActiveAndroid
+mvn clean install

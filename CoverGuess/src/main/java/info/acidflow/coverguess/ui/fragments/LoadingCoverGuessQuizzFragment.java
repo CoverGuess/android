@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.activeandroid.query.Select;
+
 import java.util.List;
 
 import info.acidflow.coverguess.CoverGuess;
@@ -46,8 +48,10 @@ public class LoadingCoverGuessQuizzFragment extends AbstractCoverGuessUIFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mAlbumsQuizz = CoverGuess.getDaoMaster().newSession().getAlbumDao().queryBuilder()
-                .orderRaw("RANDOM()").limit(5).list();
+        mAlbumsQuizz = new Select().distinct().from( Album.class )
+                .orderBy("RANDOM()")
+                .limit(5)
+                .execute();
 
     }
 
@@ -84,7 +88,7 @@ public class LoadingCoverGuessQuizzFragment extends AbstractCoverGuessUIFragment
             ImageDownloaderController.getInstance().setListener(this);
             for(Album a : mAlbumsQuizz){
                 ImageDownloaderController.getInstance().downloadImage(
-                        a.getAlbum_cover_url(), DataType.COVER, String.valueOf(a.getAlbum_id()));
+                        a.getCoverUrl(), DataType.COVER, String.valueOf(a.getAlbumId()));
             }
         }
     }

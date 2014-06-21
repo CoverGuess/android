@@ -12,7 +12,6 @@ import java.io.IOException;
 
 import info.acidflow.coverguess.CoverGuess;
 import info.acidflow.coverguess.datamodel.Album;
-import info.acidflow.coverguess.datamodel.AlbumDao;
 import info.acidflow.coverguess.network.utils.NetworkUtils;
 import info.acidflow.coverguess.utils.Constants;
 
@@ -63,21 +62,21 @@ public class UpdateContentController {
     }
 
     private void parseUpdateResponse(String response){
-        try {
-            AlbumDao albumDao = CoverGuess.getDaoMaster().newSession().getAlbumDao();
-            JSONArray array = new JSONArray(response);
-            for(int i = 0; i < array.length(); i++){
-                JSONObject album = array.getJSONObject(i);
-                Album a = new Album();
-                a.setId(album.getLong("id"));
-                a.setAlbum_artist(album.getString("album_artist"));
-                a.setAlbum_title(album.getString("album_name"));
-                a.setAlbum_last_updated(album.getLong("last_update"));
-                a.setAlbum_cover_url(album.getString("image_url"));
-                albumDao.insertOrReplace(a);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            AlbumDao albumDao = CoverGuess.getDaoMaster().newSession().getAlbumDao();
+//            JSONArray array = new JSONArray(response);
+//            for(int i = 0; i < array.length(); i++){
+//                JSONObject album = array.getJSONObject(i);
+//                Album a = new Album();
+//                a.setId(album.getLong("id"));
+//                a.setAlbum_artist(album.getString("album_artist"));
+//                a.setAlbum_title(album.getString("album_name"));
+//                a.setAlbum_last_updated(album.getLong("last_update"));
+//                a.setAlbum_cover_url(album.getString("image_url"));
+//                albumDao.insertOrReplace(a);
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
     }
 }

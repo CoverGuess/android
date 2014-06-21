@@ -1,3 +1,4 @@
-include ':CoverGuess', ':DaoGenerator'
+include ':CoverGuess'
+//, ':DaoGenerator'
 // LIBRARIES
 include ':lib_NineOldAndroids'
