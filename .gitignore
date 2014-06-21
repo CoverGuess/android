@@ -34,4 +34,5 @@ proguard/
 # libraries
 lib_NineOldAndroids/
 lib_FlipImageView/
-CoverGuess/src-gen
+build/
+ActiveAndroid/
