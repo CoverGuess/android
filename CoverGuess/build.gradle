@@ -37,6 +37,7 @@ dependencies {
     compile ('com.activeandroid:activeandroid:3.1-SNAPSHOT'){
             exclude module: 'support-v4'
     }
+    compile ('com.squareup.retrofit:retrofit:1.6.0')
 }
 
 task nativeLibsToJar(type: Zip, description: 'create a jar archive of the native libs') {
