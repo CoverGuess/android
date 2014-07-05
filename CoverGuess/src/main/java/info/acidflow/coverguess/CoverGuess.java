@@ -45,7 +45,13 @@ public class CoverGuess extends com.activeandroid.app.Application {
         mDatabaseServiceConnection = new DatabaseAccessServiceConnection();
         bindDatabaseService();
         initializeCoverGuessAPI();
-        prepopulateDb();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                prepopulateDb();
+            }
+        }).start();
+
     }
 
     private void bindDatabaseService(){
@@ -117,10 +123,10 @@ public class CoverGuess extends com.activeandroid.app.Application {
         };
         ActiveAndroid.beginTransaction();
         try {
-            for (int i = 0; i < albums.length; i++) {
-                albums[i].setCategory(cat);
-                albums[i].save();
-            }
+                for (int i = 0; i < albums.length; i++) {
+                    albums[i].setCategory(cat);
+                    albums[i].save();
+                }
             ActiveAndroid.setTransactionSuccessful();
         }
         finally {

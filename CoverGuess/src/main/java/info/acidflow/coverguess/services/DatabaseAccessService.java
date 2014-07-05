@@ -10,6 +10,7 @@ import com.activeandroid.query.Select;
 import java.util.List;
 
 import info.acidflow.coverguess.CoverGuess;
+import info.acidflow.coverguess.datamodel.Album;
 import info.acidflow.coverguess.datamodel.Category;
 import info.acidflow.coverguess.eventbus.events.DatabaseQueryListSuccessEvent;
 
@@ -44,4 +45,18 @@ public class DatabaseAccessService extends Service {
             }
         }).start();
     }
+
+    public void getNewQuizz( final int limit ){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Album> albums = new Select().distinct().from( Album.class )
+                        .orderBy("RANDOM()")
+                        .limit( limit )
+                        .execute();
+                CoverGuess.getEventBus().post(new DatabaseQueryListSuccessEvent<Album>( albums ) );
+            }
+        }).start();
+    }
+
 }

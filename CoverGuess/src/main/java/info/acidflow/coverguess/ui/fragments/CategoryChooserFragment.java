@@ -79,8 +79,6 @@ public class CategoryChooserFragment extends AbstractCoverGuessUIFragment {
         mGridView.setVisibility(View.VISIBLE);
     }
 
-
-
     public void onEvent( DatabaseAccessServiceReadyEvent event ){
         CoverGuess.getDatabaseService().getCategories(true, "category_name ASC");
     }
