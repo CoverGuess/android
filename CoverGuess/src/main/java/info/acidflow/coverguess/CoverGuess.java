@@ -2,15 +2,21 @@ package info.acidflow.coverguess;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 
+import de.greenrobot.event.EventBus;
 import info.acidflow.coverguess.datamodel.Album;
 import info.acidflow.coverguess.datamodel.Category;
+import info.acidflow.coverguess.eventbus.events.DatabaseAccessServiceReadyEvent;
 import info.acidflow.coverguess.network.interfaces.CoverGuessAPI;
+import info.acidflow.coverguess.services.DatabaseAccessService;
+import info.acidflow.coverguess.services.connections.DatabaseAccessServiceConnection;
 import info.acidflow.coverguess.utils.Constants;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
@@ -24,13 +30,82 @@ public class CoverGuess extends com.activeandroid.app.Application {
 
     private static Context mApplicationContext;
     private static CoverGuessAPI sCoverGuessAPI;
+    private static EventBus sEventBus;
+    private static DatabaseAccessService mDatabaseService;
+    private boolean isDatabaseServiceBound = false;
+    private DatabaseAccessServiceConnection mDatabaseServiceConnection;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mApplicationContext = getApplicationContext();
+        sEventBus = new EventBus();
+        sEventBus.registerSticky( this );
         Constants.CONFIGURATION.initialize(getApplicationContext());
+        mDatabaseServiceConnection = new DatabaseAccessServiceConnection();
+        bindDatabaseService();
         initializeCoverGuessAPI();
+        prepopulateDb();
+    }
+
+    private void bindDatabaseService(){
+        bindService(new Intent( this, DatabaseAccessService.class), mDatabaseServiceConnection, Context.BIND_AUTO_CREATE);
+        isDatabaseServiceBound = true;
+    }
+
+    private void unbindDatabaseService(){
+        if (isDatabaseServiceBound) {
+            unbindService( mDatabaseServiceConnection );
+            isDatabaseServiceBound = false;
+        }
+    }
+
+    /**
+     * Easy access to the application context
+     * @return the application context
+     */
+    public static Context getContext(){
+        return mApplicationContext;
+    }
+
+    public static EventBus getEventBus(){
+        return sEventBus;
+    }
+
+    public static DatabaseAccessService getDatabaseService(){
+        return mDatabaseService;
+    }
+
+    private void initializeCoverGuessAPI(){
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint( Constants.HTTP.API_ROOT_URL.toString() )
+                .build();
+        sCoverGuessAPI = restAdapter.create( CoverGuessAPI.class );
+    }
+
+    public static CoverGuessAPI getRestAPI(){
+        return sCoverGuessAPI;
+    }
+
+    @Override
+    public void onTerminate() {
+        unbindDatabaseService();
+        sEventBus.unregister(this);
+        sEventBus = null;
+        sCoverGuessAPI = null;
+        mApplicationContext = null;
+        mDatabaseService = null;
+        mDatabaseServiceConnection = null;
+        super.onTerminate();
+
+    }
+
+    public void onEvent( DatabaseAccessServiceReadyEvent event ) {
+        Log.i("CoverGuess", "Event received from the event bus");
+        mDatabaseService = event.getService();
+    }
+
+    private void prepopulateDb(){
         Category cat = new Category("Testing");
         cat.save();
         Album[] albums = new Album[]{
@@ -51,25 +126,6 @@ public class CoverGuess extends com.activeandroid.app.Application {
         finally {
             ActiveAndroid.endTransaction();
         }
-    }
-
-    /**
-     * Easy access to the application context
-     * @return the application context
-     */
-    public static Context getContext(){
-        return mApplicationContext;
-    }
-
-    private void initializeCoverGuessAPI(){
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint( Constants.HTTP.API_ROOT_URL.toString() )
-                .build();
-        sCoverGuessAPI = restAdapter.create( CoverGuessAPI.class );
-    }
-
-    public static CoverGuessAPI getRestAPI(){
-        return sCoverGuessAPI;
     }
 
 }

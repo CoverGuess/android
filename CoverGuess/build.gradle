@@ -38,6 +38,7 @@ dependencies {
             exclude module: 'support-v4'
     }
     compile ('com.squareup.retrofit:retrofit:1.6.0')
+    compile ('de.greenrobot:eventbus:2.2.1')
 }
 
 task nativeLibsToJar(type: Zip, description: 'create a jar archive of the native libs') {
