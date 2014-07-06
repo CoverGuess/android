@@ -29,7 +29,6 @@ import retrofit.converter.GsonConverter;
 public class CoverGuess extends com.activeandroid.app.Application {
 
     private static Context mApplicationContext;
-    private static CoverGuessAPI sCoverGuessAPI;
     private static EventBus sEventBus;
     private static DatabaseAccessService mDatabaseService;
     private boolean isDatabaseServiceBound = false;
@@ -44,7 +43,6 @@ public class CoverGuess extends com.activeandroid.app.Application {
         Constants.CONFIGURATION.initialize(getApplicationContext());
         mDatabaseServiceConnection = new DatabaseAccessServiceConnection();
         bindDatabaseService();
-        initializeCoverGuessAPI();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -82,23 +80,12 @@ public class CoverGuess extends com.activeandroid.app.Application {
         return mDatabaseService;
     }
 
-    private void initializeCoverGuessAPI(){
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint( Constants.HTTP.API_ROOT_URL.toString() )
-                .build();
-        sCoverGuessAPI = restAdapter.create( CoverGuessAPI.class );
-    }
-
-    public static CoverGuessAPI getRestAPI(){
-        return sCoverGuessAPI;
-    }
 
     @Override
     public void onTerminate() {
         unbindDatabaseService();
         sEventBus.unregister(this);
         sEventBus = null;
-        sCoverGuessAPI = null;
         mApplicationContext = null;
         mDatabaseService = null;
         mDatabaseServiceConnection = null;
